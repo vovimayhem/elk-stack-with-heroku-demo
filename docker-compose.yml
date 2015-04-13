@@ -1,0 +1,33 @@
+---
+# Servicio de Elasticsearch:
+elasticsearch:
+  image: elasticsearch:latest
+  ports:
+      - "9208:9200" # Bind host port 9201 to Elasticsearch HTTP port
+      - "9308:9300" # Bind host port 9301 to Elasticsearch ???? port
+  volumes:
+    - volumes/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml  # The config file
+    - volumes/elasticsearch/data:/usr/share/elasticsearch/data        # The data directory
+    - volumes/elasticsearch/plugins:/usr/share/elasticsearch/plugins  # The plugin directory
+  # command: elasticsearch -Des.config=/data/elasticsearch.yml
+
+# Servicio de Kibana (Elasticsearch):
+kibana:
+  image: vovimayhem/kibana:4
+  ports:
+    - "5608:5601" # Bind host port 5602 to Kibana HTTP UI port 5601
+  links:
+    - elasticsearch:elasticsearch.naranya.net
+  volumes:
+    - volumes/kibana/config/kibana.yml:/kibana/config/kibana.yml  # The config file
+
+# Servicio de Logstash
+logstash:
+  image: logstash:1.4
+  ports:
+      - "15148:1514" # Bind host port 15148 to Logstash configured syslog input port 1514
+  links:
+    - elasticsearch:elasticsearch.naranya.net
+  volumes:
+    - volumes/logstash/config-dir:/config-dir  # The config directory
+  command: logstash agent -f /config-dir/receive-from-heroku-log-cmd.conf
