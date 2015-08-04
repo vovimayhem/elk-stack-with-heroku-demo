@@ -1,7 +1,7 @@
 ---
 # Servicio de Elasticsearch:
 elasticsearch:
-  image: elasticsearch:latest
+  image: elasticsearch:1.5
   ports:
       - "9208:9200" # Bind host port 9201 to Elasticsearch HTTP port
       - "9308:9300" # Bind host port 9301 to Elasticsearch ???? port
